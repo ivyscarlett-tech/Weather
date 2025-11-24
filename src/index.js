@@ -8,20 +8,28 @@ function refreshWeather(response) {
   let timeElement = document.querySelector("#time");
   let date = new Date(response.data.time * 1000);
   let iconElement = document.querySelector("#icon");
-  
+
   cityElement.innerHTML = response.data.city;
   timeElement.innerHTML = formatDate(date);
   descriptionElement.innerHTML = response.data.condition.description;
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
   windSpeedElement.innerHTML = `${response.data.wind.speed}km/h`;
   temperatureElement.innerHTML = Math.round(temperature);
-  iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`; 
+  iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`;
 }
 
 function formatDate(date) {
   let minutes = date.getMinutes();
   let hours = date.getHours();
-  let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  let days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   let day = days[date.getDay()];
 
@@ -30,7 +38,6 @@ function formatDate(date) {
   }
 
   return `${day} ${hours}:${minutes}`;
-
 }
 
 function searchCity(city) {
@@ -42,37 +49,38 @@ function searchCity(city) {
 function handleSearchSubmit(event) {
   event.preventDefault();
   let searchInput = document.querySelector("#search-form-input");
-  console.log(searchInput.value);
 
   searchCity(searchInput.value);
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  let searchFormElement = document.querySelector("#search-form");
+function displayForecast() {
+  let days = ["Tue", "Wed", "Thur", "Fri", "Sat"];
+  let forecastHTML = "";
 
-  if (searchFormElement) {
-    searchFormElement.addEventListener("submit", handleSearchSubmit);
-  } else {
-    console.error(
-      "Error: The form element with ID '#search-form' was not found."
-    );
-  }
-});
+  days.forEach(function (day) {
+    forecastHTML =
+      forecastHTML +
+      `
+       <div class="weather-forecast-day">
+         <div class="weather-forecast-date">${day}</div>
+         <div class="weather-forecast-icon">⛅</div>
+         <div class="weather-forecast-temperatures">
+           <div class="weather-forecast-temperature">
+             <strong>15°</strong>
+           </div>
+           <div class="weather-forecast-temperature">9°</div>
+         </div>
+        </div>
+      `;
+  });
+
+  let forecast = document.querySelector("#forecast");
+
+  forecast.innerHTML = forecastHTML;
+}
+
+let searchFormElement = document.querySelector("#search-form");
+searchFormElement.addEventListener("submit", handleSearchSubmit);
 
 searchCity("London");
-
-
-let forecast = document.querySelector("#forecast");
-
-forecast.innerHTML = `
-  <div class="weather-forecast-day">
-    <div class="weather-forecast-date">Tue</div>
-    <div class="weather-forecast-icon">⛅</div>
-    <div class="weather-forecast-temperatures">
-      <div class="weather-forecast-temperature">
-        <strong>15°</strong>
-      </div>
-      <div class="weather-forecast-temperature">9°</div>
-    </div>
-  </div>
-  `;
+displayForecast();
